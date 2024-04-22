@@ -4,8 +4,7 @@ import * as yup from "yup";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const LoginPage = () => {
-    const[data,setdata]=useState([]);
-    const expot=data;
+    //validatating inputs using yup
     const validationSchema=yup.object({
         name:yup.string().min(3).required("Username required"),
         email:yup.string().email().required("Email required"),
@@ -13,6 +12,7 @@ const LoginPage = () => {
         confirm_password: yup.string().min(6).required("confirm password is required").oneOf([yup.ref("password"), null], "password don't match"),
         gender:yup.string().required("required")
     })
+    //initializing values for input fields
     const init = {
         name: "",
         email: "",
@@ -21,12 +21,14 @@ const LoginPage = () => {
         gender:"",
         remember_me:""
     }
+    //getting functions and objects using destructuring
     const {values,handleChange,touched,handleBlur,handleSubmit,errors} = useFormik({
         initialValues: init,
         validationSchema:validationSchema,
         onSubmit: (value,action) => {
             console.log(value);
             setdata(data.concat(values));
+            //clearing fields after user successfully submit data
             action.resetForm();
         }
     })
@@ -60,6 +62,7 @@ const LoginPage = () => {
                         <div>
                             <label htmlFor="confirm-password" className="sr-only">Confirm Password</label>
                             <input id="confirm-password" name="confirm_password" type="password" autoComplete="current-password" required className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${(values.confirm_password && !errors.confirm_password)?"bg-blue-50":""} border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}  placeholder="Confirm Password" value={values.confirm_password} onChange={handleChange} onBlur={handleBlur} />
+                            {/* showing only when user touched data  */}
                             {touched.confirm_password && <p className={` text-red-600 text-sm ${errors.confirm_password?"p-1":""} `} >{errors.confirm_password}</p>}
                         </div>
                         <div>
@@ -90,6 +93,7 @@ const LoginPage = () => {
 
                     <div>
                         <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={()=>{
+                            //checking whether login is successful or not
                             (errors.name || errors.email || errors.password || errors.confirm_password || values.name==="" || values.email==="" || values.password==="" || values.confirm_password==="")?toast.error("Login Unsuccesful"):toast.success("Login successfull")
                         }}>
                             Sign up
